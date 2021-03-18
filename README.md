@@ -3,23 +3,22 @@
 
 ## momomo.com.platform.db.transactional
 
-###### The absolute base of our database transactions libraries.
+###### The absolute base of our database transaction libraries.
 
 #### Dependencies 
 * [`momomo.com.platform.Core`](https://github.com/momomo/momomo.com.platform.Core) 
 * [`momomo.com.platform.Lambda`](https://github.com/momomo/momomo.com.platform.Lambda)
-* [`momomo.com.platform.db.base`](https://github.com/momomo/momomo.com.platform.db.base)
-* [`momomo.com.platform.db.base.jpa`](https://github.com/momomo/momomo.com.platform.db.base.jpa)
 
 #### Used by
 * [`momomo.com.platform.db.base.transactional.Hibernate`](https://github.com/momomo/momomo.com.platform.db.transactional.Hibernate) 
+* [`momomo.com.platform.db.base.transactional.Spring`](https://github.com/momomo/momomo.com.platform.db.transactional.Spring) 
 
 ##### Maven dependencies available on maven central [search.maven.org](https://search.maven.org/search?q=com.momomo)
 ##### Dependency   
 ```xml
 <dependency>
   <groupId>com.momomo</groupId>
-  <artifactId>momomo.com.platform.db.base.jpa.session</artifactId>
+  <artifactId>momomo.com.platform.db.base.transactional</artifactId>
   <version>2.1.6</version>
 </dependency>                                                      
 ```                         
