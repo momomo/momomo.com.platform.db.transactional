@@ -11,7 +11,7 @@ import momomo.com.Lambda;
  * 
  * @author Joseph S.
  */
-public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $TransactionOptions<Tx, TxO>> {
+public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $TransactionOptions<TxO, Tx>> {
     
     /////////////////////////////////////////////////////////////////////
     
@@ -143,4 +143,5 @@ public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $Transa
     }
     
     /////////////////////////////////////////////////////////////////////
+    
 }

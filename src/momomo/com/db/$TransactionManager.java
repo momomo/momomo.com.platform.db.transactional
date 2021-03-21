@@ -9,7 +9,7 @@ package momomo.com.db;
  *            
  * @author Joseph S.
  */
-public interface $TransactionManager<Tx extends $Transaction<Tx>, TxO extends $TransactionOptions<Tx, TxO>> {
+public interface $TransactionManager<Tx extends $Transaction<Tx>, TxO extends $TransactionOptions<TxO, Tx>> {
     void commit  (Tx transaction);
     void rollback(Tx transaction);
 }

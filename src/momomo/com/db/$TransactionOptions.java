@@ -11,10 +11,10 @@ import java.sql.Connection;
  *             
  * @author Joseph S.             
  */
-public abstract class $TransactionOptions<Tx extends $Transaction<Tx>, THIS extends $TransactionOptions<Tx, THIS>> {
+public abstract class $TransactionOptions<THIS extends $TransactionOptions<THIS, Tx>, Tx extends $Transaction<Tx>> {
     
     /////////////////////////////////////////////////////////////////////
-    private THIS THIS() { return (THIS) this; }
+    protected THIS THIS() { return (THIS) this; }
     /////////////////////////////////////////////////////////////////////
     
     public abstract Tx create();

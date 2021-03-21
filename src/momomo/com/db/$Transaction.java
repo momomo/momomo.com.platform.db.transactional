@@ -4,6 +4,7 @@ import momomo.com.Lambda;
 import momomo.com.exceptions.$DatabaseException;
 import momomo.com.exceptions.$DatabaseTransactionalCommitException;
 import momomo.com.exceptions.$DatabaseTransactionalRollbackException;
+import momomo.com.exceptions.$RuntimeException;
 
 import java.util.ArrayList;
 
@@ -22,12 +23,18 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     /////////////////////////////////////////////////////////////////////
     
     // Can be null which means commit unless paramter commit to execute is passed
-    private Boolean commit = null;
+    private Boolean commit;
     
     // For supportTransaction Spring never sets it to complete why we have to do it ourselves to ensure we don't repeat on a terminated transaction
     private boolean rolled = false, committed = false;
     
-    protected $Transaction() {}
+    protected $Transaction() {
+        this(null);
+    }
+    
+    protected $Transaction(Boolean commit) {
+        this.commit = commit;
+    }
     
     /////////////////////////////////////////////////////////////////////
     
@@ -35,17 +42,10 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     protected abstract void $rollback$ ();
     
     /////////////////////////////////////////////////////////////////////
-
-    /**
-     * Rollsback and cancels any commits to be done. If there are any issues rolling back a rollback exception will be thrown otherwise rollbacks silently
-     */
-    public THIS cancel() {
-        this.commit = false;
-
-        return rollback();
-    }
-
+    
     public THIS rollback() {
+        this.commit = false;            // One a rollback has been called, we disable autocommit regardless of the success of the outcome of the rollback call, just in case, and also to prevent the commit from occuring in execute 
+        
         try {
             if ( !rolled ) {
                 $rollback$();
@@ -87,12 +87,12 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     /////////////////////////////////////////////////////////////////////
     
     private final ArrayList<Lambda.VE<? extends Exception>> afterCommit = new ArrayList<>(1);
-    public <E extends Exception> THIS afterTransactionCommits(Lambda.VE<E> lambda) {
+    public <E extends Exception> THIS afterCommit(Lambda.VE<E> lambda) {
         afterCommit.add(lambda); return THIS();
     }
     
     private final ArrayList<Lambda.VE<? extends Exception>> afterRollback = new ArrayList<>(1);
-    public <E extends Exception> THIS afterTransactionRollback(Lambda.VE<E> lambda) {
+    public <E extends Exception> THIS afterRollback(Lambda.VE<E> lambda) {
         afterRollback.add(lambda); return THIS();
     }
     
@@ -112,7 +112,7 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     
     /* Override to do something else */
     protected void handleExecuteException(Throwable e) {
-        // SpringTransaction overrides this one to take care of TransactionTimeout usin some exception magic
+        // SpringTransaction overrides this one to take care of TransactionTimeout using some exception magic
     }
     
     /////////////////////////////////////////////////////////////////////
@@ -181,29 +181,29 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
         try {
             result = lambda.call((THIS) this);
         }
-        catch( Throwable x ) {
+        catch( Throwable a ) {
             // If user hasn't already committed in the lambda.call and possibly caused an error during commit Spring would have already rolled it back. 
             // If that's true, rolling back is safe anyway, and will cause a new error when rollback again which will throw a RollbackException. 
             
             try {
                 rollback();
 
-                throw x;
+                throw a;
             }
-            catch (Throwable y) {
-                handleExecuteException(y);
+            catch (Throwable b) {
+                handleExecuteException(b);
 
-                if ( y instanceof $DatabaseException) {
-                    throw y; // No need to wrap a again
+                if ( b instanceof $RuntimeException) {
+                    throw b; // No need to wrap a again
                 }
 
-                throw new $DatabaseException(y);
+                throw new $DatabaseException(b);
             }
         }
 
-        // If passed in true, always commit. If this.commit is not false, and commit is not false
-        if ( Boolean.TRUE.equals(commit) || (!Boolean.FALSE.equals(this.commit) && !Boolean.FALSE.equals(commit) ) ) {
-            commit();
+        // Unless rolled already. If passed in true, always commit. If this.commit is not false, and commit is not false
+        if ( !rolled && ( Boolean.TRUE.equals(commit) || (!Boolean.FALSE.equals(this.commit) && !Boolean.FALSE.equals(commit)) ) ) {
+            commit();                     
         }
 
         return result;
