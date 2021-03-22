@@ -4,7 +4,6 @@ import momomo.com.Lambda;
 import momomo.com.exceptions.$DatabaseException;
 import momomo.com.exceptions.$DatabaseTransactionalCommitException;
 import momomo.com.exceptions.$DatabaseTransactionalRollbackException;
-import momomo.com.exceptions.$RuntimeException;
 
 import java.util.ArrayList;
 
@@ -101,17 +100,17 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     /////////////////////////////////////////////////////////////////////
     
     /* Override to do something else */
-    protected void handleCommitException(Throwable e)  {
+    protected void handleCommitException(Throwable e) throws $DatabaseException {
         throw new $DatabaseTransactionalCommitException(e);
     }
     
     /* Override to do something else */
-    protected void handleRollbackException(Throwable e){
+    protected void handleRollbackException(Throwable e) throws $DatabaseException {
         throw new $DatabaseTransactionalRollbackException(e);
     }
     
     /* Override to do something else */
-    protected void handleExecuteException(Throwable e) {
+    protected void handleExecuteException(Throwable e) throws $DatabaseException {
         // SpringTransaction overrides this one to take care of TransactionTimeout using some exception magic
     }
     
@@ -191,13 +190,9 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
                 throw a;
             }
             catch (Throwable b) {
-                handleExecuteException(b);
-
-                if ( b instanceof $RuntimeException) {
-                    throw b; // No need to wrap a again
-                }
-
-                throw new $DatabaseException(b);
+                handleExecuteException(b);       
+                
+                throw b;
             }
         }
 
