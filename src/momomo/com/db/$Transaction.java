@@ -11,14 +11,15 @@ import java.util.ArrayList;
  * Yes, Java generics are not ideal to work with. 
  * The generics part is intended to allow for chaining and exact type resolution. 
  * 
- * @param <THIS> must be the subclass that is extending {@link $Transaction < THIS >} itself and can not be any other subclass also extending this class.  
+ * @param <Tx> must be the subclass that is extending {@link $Transaction < THIS >} itself and can not be any other subclass also extending this class.  
  *
  * @author Joseph S.           
  */
-public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
-
+public abstract class $Transaction<Tx extends $Transaction<Tx>>  {
+    private final $TransactionManager<Tx, ?> manager;
+    
     /////////////////////////////////////////////////////////////////////
-    private THIS THIS() { return (THIS) this; }
+    private Tx THIS() { return (Tx) this; }
     /////////////////////////////////////////////////////////////////////
     
     // Can be null which means commit unless paramter commit to execute is passed
@@ -27,27 +28,23 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     // For supportTransaction Spring never sets it to complete why we have to do it ourselves to ensure we don't repeat on a terminated transaction
     private boolean rolled = false, committed = false;
     
-    protected $Transaction() {
-        this(null);
+    protected $Transaction(momomo.com.db.$TransactionManager<Tx, ?> manager) {
+        this(manager, null);
     }
     
-    protected $Transaction(Boolean commit) {
-        this.commit = commit;
+    protected $Transaction(momomo.com.db.$TransactionManager<Tx, ?> manager, Boolean commit) {
+        this.manager = manager;
+        this.commit  = commit;
     }
     
     /////////////////////////////////////////////////////////////////////
     
-    protected abstract void $commit$   ();
-    protected abstract void $rollback$ ();
-    
-    /////////////////////////////////////////////////////////////////////
-    
-    public THIS rollback() {
+    public Tx rollback() {
         this.commit = false;            // One a rollback has been called, we disable autocommit regardless of the success of the outcome of the rollback call, just in case, and also to prevent the commit from occuring in execute 
         
         try {
             if ( !rolled ) {
-                $rollback$();
+                manager.rollback( THIS() );
                 rolled = true;
             }
         }
@@ -63,10 +60,10 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     }
     /////////////////////////////////////////////////////////////////////
 
-    public THIS commit() {
+    public Tx commit() {
         try {
             if ( !committed ) {
-                $commit$();
+                manager.commit( THIS() );
 
                 committed = true;
             }
@@ -86,12 +83,12 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     /////////////////////////////////////////////////////////////////////
     
     private final ArrayList<Lambda.VE<? extends Exception>> afterCommit = new ArrayList<>(1);
-    public <E extends Exception> THIS afterCommit(Lambda.VE<E> lambda) {
+    public <E extends Exception> Tx afterCommit(Lambda.VE<E> lambda) {
         afterCommit.add(lambda); return THIS();
     }
     
     private final ArrayList<Lambda.VE<? extends Exception>> afterRollback = new ArrayList<>(1);
-    public <E extends Exception> THIS afterRollback(Lambda.VE<E> lambda) {
+    public <E extends Exception> Tx afterRollback(Lambda.VE<E> lambda) {
         afterRollback.add(lambda); return THIS();
     }
     
@@ -111,7 +108,7 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     
     /* Override to do something else */
     protected void handleExecuteException(Throwable e) throws $DatabaseException {
-        // SpringTransaction overrides this one to take care of TransactionTimeout using some exception magic
+        // SpringTransaction used to override this one to take care of TransactionTimeout using some exception magic, we don't but we leave the ability to hook in instead
     }
     
     /////////////////////////////////////////////////////////////////////
@@ -128,7 +125,7 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     /**
      * @param lambda 1 param lamda which passes 'this' Transaction
      */
-    public <R, E extends Throwable> void execute(Lambda.V1E<THIS, E> lambda) throws E {
+    public <R, E extends Throwable> void execute(Lambda.V1E<Tx, E> lambda) throws E {
         execute(lambda.R1E());
     }
     
@@ -144,7 +141,7 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
      * @param lambda 1 param lamda which passes 'this' Transaction
      * @param commit true, false, or null where null leaves the default in, and false explicitly tells it not to commit automatically               
      */
-    public <R, E extends Throwable> void execute(Lambda.V1E<THIS, E> lambda, Boolean commit) throws E {
+    public <R, E extends Throwable> void execute(Lambda.V1E<Tx, E> lambda, Boolean commit) throws E {
         execute(lambda.R1E(), commit);
     }
     
@@ -159,7 +156,7 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
     /**
      * @param lambda 1 param lamda which passes 'this' Transaction that returns, allowing you to return whatever the lambda wants to return such as created entity within the transaction
      */
-    public <R, E extends Throwable> R execute(Lambda.R1E<R, THIS, E> lambda) throws E {
+    public <R, E extends Throwable> R execute(Lambda.R1E<R, Tx, E> lambda) throws E {
         return execute(lambda, this.commit);
     }
     
@@ -175,10 +172,10 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
      * @param lambda 1 param lamda which passes 'this' Transaction that returns, allowing you to return whatever the lambda wants to return such as created entity within the transaction
      * @param commit true, false, or null where null leaves the default in, and false explicitly tells it not to commit automatically
      */
-    public <R, E extends Throwable> R execute(Lambda.R1E<R, THIS, E> lambda, Boolean commit) throws E {
+    public <R, E extends Throwable> R execute(Lambda.R1E<R, Tx, E> lambda, Boolean commit) throws E {
         R result;
         try {
-            result = lambda.call((THIS) this);
+            result = lambda.call((Tx) this);
         }
         catch( Throwable a ) {
             // If user hasn't already committed in the lambda.call and possibly caused an error during commit Spring would have already rolled it back. 
@@ -190,7 +187,7 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
                 throw a;
             }
             catch (Throwable b) {
-                handleExecuteException(b);       
+                handleExecuteException(b);      // User might opt to throw something else here, like a $DatabaseException(...). We use for force wrap exceptions to $DatbaseExceptions, now we opt to keep E pure.          
                 
                 throw b;
             }
@@ -206,7 +203,7 @@ public abstract class $Transaction<THIS extends $Transaction<THIS>>  {
 
     /////////////////////////////////////////////////////////////////////
 
-    public THIS autocommit(boolean commit) {
+    public Tx autocommit(boolean commit) {
         this.commit = commit; return THIS();
     }
 
