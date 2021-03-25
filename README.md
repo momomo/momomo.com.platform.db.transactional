@@ -1,8 +1,6 @@
 <!---
 -->
 
-## momomo.com.platform.db.transactional
-
 ###### The absolute base of our database transaction libraries.
 
 ##### Dependencies 
