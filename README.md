@@ -46,7 +46,5 @@ Allows for nanosecond time resolution when asking for time from Java Runtime in 
 * **[`momomo.com.platform.db.transactional.Hibernate`](https://github.com/momomo/momomo.com.platform.db.transactional.Hibernate)**  
 A library to execute database command in transactions without having to use annotations based on Hibernate libraries. No Spring!
           
----
-
 ### Contribute
 Send an email to `opensource{at}momomo.com` if you would like to contribute in any way, make changes or otherwise have thoughts and/or ideas on things to improve.
