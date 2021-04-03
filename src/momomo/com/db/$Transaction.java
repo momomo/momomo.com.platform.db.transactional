@@ -218,5 +218,5 @@ public abstract class $Transaction<Tx extends $Transaction<Tx>>  {
             }
         }
     }
-
+    
 }
