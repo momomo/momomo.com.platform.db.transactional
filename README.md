@@ -7,7 +7,7 @@
 * [`momomo.com.platform.Core`](https://github.com/momomo/momomo.com.platform.Core) 
 * [`momomo.com.platform.Lambda`](https://github.com/momomo/momomo.com.platform.Lambda)
 
-#### Used by
+##### Used by
 * [`momomo.com.platform.db.base.transactional.Hibernate`](https://github.com/momomo/momomo.com.platform.db.transactional.Hibernate) 
 * [`momomo.com.platform.db.base.transactional.Spring`](https://github.com/momomo/momomo.com.platform.db.transactional.Spring) 
 
