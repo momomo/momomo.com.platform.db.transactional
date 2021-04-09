@@ -49,10 +49,10 @@ public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $Transa
         requireTransaction().execute(lambda, commit);
     }
     
-    default <R, E extends Throwable> void requireTransaction(Lambda.V1E<Tx, E> lambda) throws E {
+    default <R, E extends Throwable> void requireTransaction(Lambda.V1E<? super Tx, E> lambda) throws E {
         requireTransaction().execute(lambda);
     }
-    default <R, E extends Throwable> void requireTransaction(Lambda.V1E<Tx, E> lambda, Boolean commit) throws E {
+    default <R, E extends Throwable> void requireTransaction(Lambda.V1E<? super Tx, E> lambda, Boolean commit) throws E {
         requireTransaction().execute(lambda, commit);
     }
     
@@ -63,10 +63,10 @@ public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $Transa
         return requireTransaction().execute(lambda, commit);
     }
     
-    default <R, E extends Throwable> R requireTransaction(Lambda.R1E<R, Tx, E> lambda) throws E {
+    default <R, E extends Throwable> R requireTransaction(Lambda.R1E<R, ? super Tx, E> lambda) throws E {
         return requireTransaction().execute(lambda);
     }
-    default <R, E extends Throwable> R requireTransaction(Lambda.R1E<R, Tx, E> lambda, Boolean commit) throws E {
+    default <R, E extends Throwable> R requireTransaction(Lambda.R1E<R, ? super Tx, E> lambda, Boolean commit) throws E {
         return requireTransaction().execute(lambda, commit);
     }
     
@@ -85,10 +85,10 @@ public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $Transa
         newTransaction().execute(lambda, commit);
     }
     
-    default <R, E extends Throwable> void newTransaction(Lambda.V1E<Tx, E> lambda) throws E {
+    default <R, E extends Throwable> void newTransaction(Lambda.V1E<? super Tx, E> lambda) throws E {
         newTransaction().execute(lambda);
     }
-    default <R, E extends Throwable> void newTransaction(Lambda.V1E<Tx, E> lambda, Boolean commit) throws E {
+    default <R, E extends Throwable> void newTransaction(Lambda.V1E<? super Tx, E> lambda, Boolean commit) throws E {
         newTransaction().execute(lambda, commit);
     }
     
@@ -99,10 +99,10 @@ public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $Transa
         return newTransaction().execute(lambda, commit);
     }
     
-    default <R, E extends Throwable> R newTransaction(Lambda.R1E<R, Tx, E> lambda) throws E {
+    default <R, E extends Throwable> R newTransaction(Lambda.R1E<R, ? super Tx, E> lambda) throws E {
         return newTransaction().execute(lambda);
     }
-    default <R, E extends Throwable> R newTransaction(Lambda.R1E<R, Tx, E> lambda, Boolean commit) throws E {
+    default <R, E extends Throwable> R newTransaction(Lambda.R1E<R, ? super Tx, E> lambda, Boolean commit) throws E {
         return newTransaction().execute(lambda, commit);
     }
     
@@ -121,10 +121,10 @@ public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $Transa
         supportTransaction().execute(lambda, commit);
     }
     
-    default <R, E extends Throwable> void supportTransaction(Lambda.V1E<Tx, E> lambda) throws E {
+    default <R, E extends Throwable> void supportTransaction(Lambda.V1E<? super Tx, E> lambda) throws E {
         supportTransaction().execute(lambda);
     }
-    default <R, E extends Throwable> void supportTransaction(Lambda.V1E<Tx, E> lambda, Boolean commit) throws E {
+    default <R, E extends Throwable> void supportTransaction(Lambda.V1E<? super Tx, E> lambda, Boolean commit) throws E {
         supportTransaction().execute(lambda, commit);
     }
     
@@ -135,10 +135,10 @@ public interface $Transactional<Tx extends $Transaction<Tx>, TxO extends $Transa
         return supportTransaction().execute(lambda, commit);
     }
     
-    default <R, E extends Throwable> R supportTransaction(Lambda.R1E<R, Tx, E> lambda) throws E {
+    default <R, E extends Throwable> R supportTransaction(Lambda.R1E<R, ? super Tx, E> lambda) throws E {
         return supportTransaction().execute(lambda);
     }
-    default <R, E extends Throwable> R supportTransaction(Lambda.R1E<R, Tx, E> lambda, Boolean commit) throws E {
+    default <R, E extends Throwable> R supportTransaction(Lambda.R1E<R, ? super Tx, E> lambda, Boolean commit) throws E {
         return supportTransaction().execute(lambda, commit);
     }
     

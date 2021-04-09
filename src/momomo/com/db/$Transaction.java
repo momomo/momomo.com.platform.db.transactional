@@ -125,7 +125,7 @@ public abstract class $Transaction<Tx extends $Transaction<Tx>>  {
     /**
      * @param lambda 1 param lamda which passes 'this' Transaction
      */
-    public <R, E extends Throwable> void execute(Lambda.V1E<Tx, E> lambda) throws E {
+    public <R, E extends Throwable> void execute(Lambda.V1E<? super Tx, E> lambda) throws E {
         execute(lambda.R1E());
     }
     
@@ -141,7 +141,7 @@ public abstract class $Transaction<Tx extends $Transaction<Tx>>  {
      * @param lambda 1 param lamda which passes 'this' Transaction
      * @param commit true, false, or null where null leaves the default in, and false explicitly tells it not to commit automatically               
      */
-    public <R, E extends Throwable> void execute(Lambda.V1E<Tx, E> lambda, Boolean commit) throws E {
+    public <R, E extends Throwable> void execute(Lambda.V1E<? super Tx, E> lambda, Boolean commit) throws E {
         execute(lambda.R1E(), commit);
     }
     
@@ -156,7 +156,7 @@ public abstract class $Transaction<Tx extends $Transaction<Tx>>  {
     /**
      * @param lambda 1 param lamda which passes 'this' Transaction that returns, allowing you to return whatever the lambda wants to return such as created entity within the transaction
      */
-    public <R, E extends Throwable> R execute(Lambda.R1E<R, Tx, E> lambda) throws E {
+    public <R, E extends Throwable> R execute(Lambda.R1E<R, ? super Tx, E> lambda) throws E {
         return execute(lambda, this.commit);
     }
     
@@ -172,7 +172,7 @@ public abstract class $Transaction<Tx extends $Transaction<Tx>>  {
      * @param lambda 1 param lamda which passes 'this' Transaction that returns, allowing you to return whatever the lambda wants to return such as created entity within the transaction
      * @param commit true, false, or null where null leaves the default in, and false explicitly tells it not to commit automatically
      */
-    public <R, E extends Throwable> R execute(Lambda.R1E<R, Tx, E> lambda, Boolean commit) throws E {
+    public <R, E extends Throwable> R execute(Lambda.R1E<R, ? super Tx, E> lambda, Boolean commit) throws E {
         R result;
         try {
             result = lambda.call((Tx) this);
