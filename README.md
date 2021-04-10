@@ -8,8 +8,8 @@
 * [`momomo.com.platform.Lambda`](https://github.com/momomo/momomo.com.platform.Lambda)
 
 ##### Used by
-* [`momomo.com.platform.db.base.transactional.Hibernate`](https://github.com/momomo/momomo.com.platform.db.transactional.Hibernate) 
-* [`momomo.com.platform.db.base.transactional.Spring`](https://github.com/momomo/momomo.com.platform.db.transactional.Spring) 
+* **[`momomo.com.platform.db.base.transactional.Hibernate`](https://github.com/momomo/momomo.com.platform.db.transactional.Hibernate)** 
+* **[`momomo.com.platform.db.base.transactional.Spring`](https://github.com/momomo/momomo.com.platform.db.transactional.Spring)**
 
 ##### Maven dependencies available on maven central [search.maven.org](https://search.maven.org/search?q=com.momomo)
 ##### Dependency   
@@ -41,6 +41,20 @@
 * **[`momomo.com.platform.db.transactional.Hibernate`](https://github.com/momomo/momomo.com.platform.db.transactional.Hibernate)** A library to execute database commands in transactions without  having to use annotations based on Hibernate libraries. No Spring!
 
 * **[`momomo.com.platform.db.transactional.Spring`](https://github.com/momomo/momomo.com.platform.db.transactional.Spring)** A library to execute database commands in transactions without  having to use annotations based on Spring libraries.
+
+### Background
+
+Is the base **`API`** for our databse related Transactional API. Is implemented in two flavours: 
+
+* **[`momomo.com.platform.db.base.transactional.Hibernate`](https://github.com/momomo/momomo.com.platform.db.transactional.Hibernate)** 
+* **[`momomo.com.platform.db.base.transactional.Spring`](https://github.com/momomo/momomo.com.platform.db.transactional.Spring)**      
+
+Example applications making use of the library: 
+
+* **[`momomo.com.example.app.Crypto.based.on.hibernate.libraries`](https://github.com/momomo/momomo.com.example.app.Crypto.based.on.hibernate.libraries)** 
+* **[`momomo.com.example.app.Crypto.based.on.spring.libraries`](momomo.com.example.app.Crypto.based.on.spring.libraries)**     
+
+   
           
 ### Contribute
 Send an email to `opensource{at}momomo.com` if you would like to contribute in any way, make changes or otherwise have thoughts and/or ideas on things to improve.
